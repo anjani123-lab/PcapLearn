@@ -1,22 +1,33 @@
 package com.poc.ericsson.pcapparser.modelPojo;
 
 public class AdmPojo {
-	int frame_number;
+//	Request frame Number
+	Long frame_number;
+//	Request Port Number
 	int req_port;
+//	Request destination Port number
 	int req_dest_port;
+//	Request acknowledgment Number
 	Long req_ackno_no;
+//	Request Sequence Number
 	Long req_seque_no;
+//	Response acknowledgment Number
 	Long res_ackno_no;
+//	Response Sequence Number
 	Long res_seq_no;
+//	Request Arrival time
 	Long req_arrival_time;
+//	Response Arrival Time
 	Long resp_arrival_time;
+//	Calculted time between request and Response
+	Long timesamp;
 
 	public AdmPojo() {
 		// TODO Auto-generated constructor stub
 	}
-
-	public AdmPojo(int frame_number, int req_port, int req_dest_port, Long req_ackno_no, Long req_seque_no,
-			Long res_ackno_no, Long res_seq_no, Long req_arrival_time, Long resp_arrival_time) {
+// Constructor
+	public AdmPojo(Long frame_number, int req_port, int req_dest_port, Long req_ackno_no, Long req_seque_no,
+			Long res_ackno_no, Long res_seq_no, Long req_arrival_time, Long resp_arrival_time, Long timesamp) {
 		super();
 		this.frame_number = frame_number;
 		this.req_port = req_port;
@@ -27,13 +38,14 @@ public class AdmPojo {
 		this.res_seq_no = res_seq_no;
 		this.req_arrival_time = req_arrival_time;
 		this.resp_arrival_time = resp_arrival_time;
+		this.timesamp = timesamp;
 	}
 
-	public int getFrame_number() {
+	public Long getFrame_number() {
 		return frame_number;
 	}
 
-	public void setFrame_number(int frame_number) {
+	public void setFrame_number(Long frame_number) {
 		this.frame_number = frame_number;
 	}
 
@@ -101,12 +113,21 @@ public class AdmPojo {
 		this.resp_arrival_time = resp_arrival_time;
 	}
 
+	public Long getTimesamp() {
+		return timesamp;
+	}
+
+	public void setTimesamp(Long timesamp) {
+		this.timesamp = timesamp;
+	}
+
+//	ToString method
 	@Override
 	public String toString() {
 		return "AdmPojo [frame_number=" + frame_number + ", req_port=" + req_port + ", req_dest_port=" + req_dest_port
 				+ ", req_ackno_no=" + req_ackno_no + ", req_seque_no=" + req_seque_no + ", res_ackno_no=" + res_ackno_no
 				+ ", res_seq_no=" + res_seq_no + ", req_arrival_time=" + req_arrival_time + ", resp_arrival_time="
-				+ resp_arrival_time + "]";
+				+ resp_arrival_time + ", timesamp=" + timesamp + "]";
 	}
 
 }

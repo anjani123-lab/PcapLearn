@@ -17,7 +17,6 @@ public class App {
 
 	public static void main(String[] args) {
 		final List<JPacket> packetList = new ArrayList<JPacket>();
-		AdmPojo adms= new AdmPojo();
 		String FILENAME = "C:\\Users\\ekaunka\\Downloads\\converted.pcap";
 		StringBuilder errbuf = new StringBuilder();
 		List<Object> poj=new ArrayList<>();
@@ -46,21 +45,25 @@ public class App {
 				Long resTime = jo.getCaptureHeader().timestampInMicros();
 				if (reqAck.equals(resSeq)) {
 					AdmPojo adm = new AdmPojo();
+					adm.setFrame_number(jp.getFrameNumber());
 					adm.setReq_ackno_no(reqAck);
 					adm.setReq_seque_no(jp.getHeader(new Tcp()).seq());
+					adm.setRes_ackno_no(jo.getHeader(new Tcp()).ack());
+					adm.setRes_seq_no(jo.getHeader(new Tcp()).seq());
+					adm.setReq_port(srcPort);
+					adm.setReq_dest_port(srcDesPort);
+					adm.setReq_arrival_time(reqTime);
+					adm.setResp_arrival_time(resTime);
+					adm.setTimesamp(resTime-reqTime);
 					poj.add(adm);
-					System.out.println("Request Source port =" + srcPort + " || Request Destination port = "
-							+ srcDesPort + " || Response Destination Port =" + jo.getHeader(new Tcp()).destination()
-							+ " || Timestamp diff :" + (resTime - reqTime));
+
 				}
 			}
 		}
-//		for(int i=0;i<10;i++) {
-//			JPacket no=packetList.get(i);
-//			Long req_ack=no.getHeader(new Tcp()).ack();
-//			adm.setReq_ackno_no(req_ack);
-//		}
-		
+
+		for(Object j:poj) {
+			System.out.println(j);
+		}
 	}
 
 }
