@@ -11,28 +11,14 @@ import org.jnetpcap.protocol.network.Arp;
 import org.jnetpcap.protocol.tcpip.Http;
 import org.jnetpcap.protocol.tcpip.Tcp;
 
+import com.google.gson.Gson;
 import com.poc.ericsson.pcapparser.modelPojo.AdmPojo;
 
 public class App {
+	static List<Object> poj = new ArrayList<>();
+	static List<JPacket> packetList = new ArrayList<JPacket>();
 
-	public static void main(String[] args) {
-		final List<JPacket> packetList = new ArrayList<JPacket>();
-		String FILENAME = "C:\\Users\\ekaunka\\Downloads\\converted.pcap";
-		StringBuilder errbuf = new StringBuilder();
-		List<Object> poj=new ArrayList<>();
-		Pcap pcap = Pcap.openOffline(FILENAME, errbuf);
-		
-		pcap.loop(-1, new JPacketHandler<StringBuilder>() {
-
-			@Override
-			public void nextPacket(JPacket packet, StringBuilder errbuf) {
-
-				if (packet.hasHeader(new Http())) {
-					packetList.add(packet);
-				}
-
-			}
-		}, errbuf);
+	public static AdmPojo getAll(AdmPojo adm) {
 		for (int i = 0; i < packetList.size(); i++) {
 			JPacket jp = packetList.get(i);
 			Long reqAck = jp.getHeader(new Tcp()).ack();
@@ -44,7 +30,6 @@ public class App {
 				Long resSeq = jo.getHeader(new Tcp()).seq();
 				Long resTime = jo.getCaptureHeader().timestampInMicros();
 				if (reqAck.equals(resSeq)) {
-					AdmPojo adm = new AdmPojo();
 					adm.setFrame_number(jp.getFrameNumber());
 					adm.setReq_ackno_no(reqAck);
 					adm.setReq_seque_no(jp.getHeader(new Tcp()).seq());
@@ -54,16 +39,35 @@ public class App {
 					adm.setReq_dest_port(srcDesPort);
 					adm.setReq_arrival_time(reqTime);
 					adm.setResp_arrival_time(resTime);
-					adm.setTimesamp(resTime-reqTime);
-					poj.add(adm);
+					adm.setTimesamp(resTime - reqTime);
 
 				}
 			}
 		}
+		return adm;
+	}
 
-		for(Object j:poj) {
-			System.out.println(j);
-		}
+	public static void main(String[] args) {
+		String FILENAME = "C:\\Users\\eaannja\\Downloads\\converted.pcap";
+		StringBuilder errbuf = new StringBuilder();
+		Pcap pcap = Pcap.openOffline(FILENAME, errbuf);
+
+		pcap.loop(-1, new JPacketHandler<StringBuilder>() {
+
+			@Override
+			public void nextPacket(JPacket packet, StringBuilder errbuf) {
+
+				if (packet.hasHeader(new Http())) {
+					packetList.add(packet);
+				}
+
+			}
+		}, errbuf);
+
+	AdmPojo admjson=new AdmPojo();
+	admjson=getAll(admjson);
+	System.out.println(new Gson().toJson(admjson));
+	System.out.println(packetList.size());
 	}
 
 }
